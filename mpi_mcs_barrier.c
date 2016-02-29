@@ -1,4 +1,4 @@
-#include <mpi/mpi.h>
+#include "mpi_mcs_barrier.h"
 #include <assert.h>
 
 /**

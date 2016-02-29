@@ -1,8 +1,4 @@
-//
-// Created by manatunga on 2/16/16.
-//
-#include <mpi/mpi.h>
-
+#include "mpi_dissemination_barrier.h"
 
 /**
  * Implementation of the dissemination barrier

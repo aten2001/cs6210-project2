@@ -1,4 +1,4 @@
-#include <mpi/mpi.h>
+#include "mpi_tournament_barrier.h"
 
 /**
  * Implementation of the tournament barrier
