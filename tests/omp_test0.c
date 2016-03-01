@@ -116,6 +116,21 @@ void mcs_test(int num_threads, int num_iters) {
   omp_mcs_barrier_destroy(&barrier);
 }
 
+void omp_test(int num_threads, int num_iters) {
+  omp_set_num_threads(num_threads);
+
+#pragma omp parallel
+  {
+    int N = omp_get_num_threads();
+    int thread_num = omp_get_thread_num();
+    for (int i = 0; i < num_iters; i++) {
+      printf("Process %d/%d: Iteration %d\n", thread_num, N, i);
+#pragma omp barrier
+    }
+  }
+
+}
+
 int main(int argc, char** argv) {
   int barrier_type, num_threads, num_iters;
   if (argc != 4) {
@@ -145,6 +160,8 @@ int main(int argc, char** argv) {
     case 5:
       mcs_test(num_threads, num_iters);
       break;
+    case 6:
+      omp_test(num_threads, num_iters);
     default:
       printf("Invalid Barrier Type\n");
       return -1;
