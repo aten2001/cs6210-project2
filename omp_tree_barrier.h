@@ -2,6 +2,7 @@
 #define PROJECT2_OMP_TREE_BARRIER_H
 
 #include <stdlib.h>
+#include <stdint.h>
 #include "omp.h"
 
 #define true 1
@@ -22,6 +23,7 @@ typedef struct omp_tree_barrier_node {
 
 typedef struct tree_barrier_thread_data {
   int32_t sense;
+  omp_tree_barrier_node_t* mynode;
 #if TREE_BARRIER_THREAD_DATA_PADDING
   int32_t padding[TREE_BARRIER_THREAD_DATA_PADDING];
 #endif
