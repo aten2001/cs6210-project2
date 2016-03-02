@@ -2,6 +2,7 @@
 #define PROJECT2_OMP_CENTRALIZED_BARRIER_H
 
 #include <stdlib.h>
+#include <stdint.h>
 #include "omp.h"
 
 #define true 1

@@ -14,7 +14,7 @@ void omp_centralized_barrier(omp_centralized_barrier_t *barrier) {
   int local_sense = !barrier->sense;
 #pragma omp atomic
   barrier->count -= 1;
-  if (barrier->N == 0) {
+  if (barrier->count == 0) {
     barrier->count = barrier->N;
     barrier->sense = local_sense;
   } else {
@@ -23,7 +23,7 @@ void omp_centralized_barrier(omp_centralized_barrier_t *barrier) {
 }
 
 void omp_centralized_barrier2_init(omp_centralized_barrier2_t *barrier, int num_threads) {
-  barrier->N = num_threads;
+  barrier->count = barrier->N = num_threads;
   barrier->sense = true;
   barrier->threads = (centralized_barrier_thread_data_t*) malloc(
           sizeof(centralized_barrier_thread_data_t) * barrier->N);
