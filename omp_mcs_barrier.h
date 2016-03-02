@@ -6,13 +6,15 @@
 #define PROJECT2_OMP_MCS_BARRIER_H
 
 #include <stdlib.h>
+#include <stdint.h>
 #include "omp.h"
 
 #define true 1
 #define false 0
-#define MCS_NODE_PADDING 0;
+#define MCS_NODE_PADDING 0
 
 typedef struct omp_mcs_barrier_node {
+  int32_t sense;
   volatile int32_t parentsense;
   int32_t num_children;
   volatile int8_t child_notready[4];
@@ -27,7 +29,6 @@ typedef struct omp_mcs_barrier_node {
 typedef struct omp_mcs_barrier {
   int32_t N;
   omp_mcs_barrier_node_t* nodes;
-  int32_t* local_senses;
 } omp_mcs_barrier_t;
 
 void omp_mcs_barrier_init(omp_mcs_barrier_t* barrier, int num_threads);
