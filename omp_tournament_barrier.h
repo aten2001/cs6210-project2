@@ -6,6 +6,7 @@
 #define PROJECT2_OMP_TOURNAMENT_BARRIER_H
 
 #include <stdlib.h>
+#include <stdint.h>
 #include "omp.h"
 #include "helpers.h"
 

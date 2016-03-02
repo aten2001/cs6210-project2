@@ -7,7 +7,7 @@
 void omp_tournament_barrier_init(omp_tournament_barrier_t* barrier, int num_threads) {
   barrier->N = num_threads;
   barrier->threads = (tournament_barrier_thread_data_t*) malloc(sizeof(tournament_barrier_thread_data_t) * num_threads);
-  barrier->num_rounds = log2ceil(barrier->N);
+  barrier->num_rounds = log2ceil(barrier->N) + 1;
 
   if (barrier->threads == NULL) {
     perror("malloc failed");
@@ -32,7 +32,12 @@ void omp_tournament_barrier_init(omp_tournament_barrier_t* barrier, int num_thre
       thread_data->rounds[k].role = UNKNOWN;
 
       if (k > 0) {
-        if ((i % (1 << k)) == 0) {
+        if ((i == 0) && ((1 << k) >= barrier->N)) {
+          thread_data->rounds[k].role = CHAMPION;
+          int32_t opponent_id = i + (1 << (k - 1));
+          tournament_barrier_thread_data_t* opponent = &barrier->threads[opponent_id];
+          thread_data->rounds[k].opponent = &(opponent->rounds[k].flag);
+        } else if ((i % (1 << k)) == 0) {
           if ((i + (1 << (k - 1))) < barrier->N) {
             if ((1 << k) < barrier->N) {
               thread_data->rounds[k].role = WINNER;
@@ -48,16 +53,10 @@ void omp_tournament_barrier_init(omp_tournament_barrier_t* barrier, int num_thre
           int32_t opponent_id = i - (1 << (k - 1));
           tournament_barrier_thread_data_t* opponent = &barrier->threads[opponent_id];
           thread_data->rounds[k].opponent = &(opponent->rounds[k].flag);
-        } else if ((i == 0) && ((1 << k) >= barrier->N)) {
-          thread_data->rounds[k].role = CHAMPION;
-          int32_t opponent_id = i + (1 << (k - 1));
-          tournament_barrier_thread_data_t* opponent = &barrier->threads[opponent_id];
-          thread_data->rounds[k].opponent = &(opponent->rounds[k].flag);
         }
       } else {
         thread_data->rounds[k].role = DROPOUT;
       }
-
     }
   }
 }
@@ -73,7 +72,7 @@ void omp_tournament_barrier_destroy(omp_tournament_barrier_t* barrier) {
 void omp_tournament_barrier(omp_tournament_barrier_t* barrier) {
   tournament_barrier_thread_data_t* thread_data = &barrier->threads[omp_get_thread_num()];
 
-  int round = 0;
+  int round = 1;
   for (; ;) {
     int end_loop = false;
     switch (thread_data->rounds[round].role) {
@@ -89,6 +88,8 @@ void omp_tournament_barrier(omp_tournament_barrier_t* barrier) {
         while (thread_data->rounds[round].flag != thread_data->sense);
         *(thread_data->rounds[round].opponent) = thread_data->sense;
         end_loop = true;
+        break;
+      case BYE:
         break;
       default:
         assert(false);
