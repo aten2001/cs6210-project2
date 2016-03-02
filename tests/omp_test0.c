@@ -134,7 +134,8 @@ void omp_test(int num_threads, int num_iters) {
 int main(int argc, char** argv) {
   int barrier_type, num_threads, num_iters;
   if (argc != 4) {
-    printf("Usage: ./%s <barrier-type> <num-threads> <num-iters>", argv[0]);
+    printf("Usage: ./%s <barrier-type> <num-threads> <num-iters>\n", argv[0]);
+    return -1;
   }
 
   barrier_type = atoi(argv[1]);
@@ -162,6 +163,7 @@ int main(int argc, char** argv) {
       break;
     case 6:
       omp_test(num_threads, num_iters);
+      break;
     default:
       printf("Invalid Barrier Type\n");
       return -1;
