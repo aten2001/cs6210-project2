@@ -1,11 +1,8 @@
-//
-// Created by manatunga on 2/29/16.
-//
-
 #ifndef PROJECT2_OMP_DISSEMINATION_BARRIER_H
 #define PROJECT2_OMP_DISSEMINATION_BARRIER_H
 
 #include <stdlib.h>
+#include <stdint.h>
 #include "omp.h"
 #include "helpers.h"
 

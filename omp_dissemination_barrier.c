@@ -34,13 +34,14 @@ void omp_dissemination_barrier_init(omp_dissemination_barrier_t* barrier, int nu
 
   for (int i = 0; i < barrier->N; i++) {
     dissemination_barrier_thread_data_t* thread_data = &barrier->threads[i];
-    for (int j = 0; j < barrier->N; j++) {
+    for (int j = 0; j < barrier->num_rounds; j++) {
       thread_data->flags.myflags[0][j] = false;
       thread_data->flags.myflags[1][j] = false;
 
       int partner = (i + (1 << j)) % barrier->N;
       dissemination_barrier_thread_data_t* partner_thread = &barrier->threads[partner];
       thread_data->flags.partnerflags[0][j] = &partner_thread->flags.myflags[0][j];
+      thread_data->flags.partnerflags[1][j] = &partner_thread->flags.myflags[1][j];
     }
   }
 }
@@ -48,8 +49,8 @@ void omp_dissemination_barrier_init(omp_dissemination_barrier_t* barrier, int nu
 void omp_dissemination_barrier_destroy(omp_dissemination_barrier_t* barrier) {
   for (int i = 0; i < barrier->N; i++) {
     dissemination_barrier_thread_data_t* thread_data = &barrier->threads[i];
-    free(thread_data->flags.myflags[0]);
-    free(thread_data->flags.myflags[1]);
+    free((void*) thread_data->flags.myflags[0]);
+    free((void*) thread_data->flags.myflags[1]);
     free(thread_data->flags.partnerflags[0]);
     free(thread_data->flags.partnerflags[1]);
   }
@@ -64,7 +65,7 @@ void omp_dissemination_barrier(omp_dissemination_barrier_t* barrier) {
     *(thread_data->flags.partnerflags[thread_data->parity][i]) = thread_data->sense;
     while (thread_data->flags.myflags[thread_data->parity][i] != thread_data->sense);
   }
-  if (thread_data->parity) {
+  if (thread_data->parity == 1) {
     thread_data->sense = !thread_data->sense;
   }
   thread_data->parity = 1 - thread_data->parity;
