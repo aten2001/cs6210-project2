@@ -27,6 +27,7 @@ void centralized_timing(int num_threads) {
 #pragma omp parallel
     {
       omp_centralized_barrier(&barrier);
+      omp_centralized_barrier(&barrier);
     }
     stop_watch(&after);
     results[j] = get_timer_diff(&before, &after);
