@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <mpi/mpi.h>
 #include <stdlib.h>
+#include "mpi.h"
 #include "../mpi_barriers.h"
 
 void tournament_test(int skip_thread) {
