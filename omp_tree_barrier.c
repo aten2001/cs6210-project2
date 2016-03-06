@@ -66,9 +66,7 @@ void omp_tree_barrier(omp_tree_barrier_t *barrier) {
 }
 
 void omp_tree_barrier_aux(omp_tree_barrier_node_t* node, int32_t* local_sense) {
-#pragma omp atomic
-  node->count--;
-  if (node->count == 0) {
+  if (__sync_fetch_and_sub(&node->count, 1) == 1) {
     if (node->parent) {
       omp_tree_barrier_aux(node->parent, local_sense);
     }
