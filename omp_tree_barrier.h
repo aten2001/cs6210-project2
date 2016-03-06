@@ -14,7 +14,7 @@
 typedef struct omp_tree_barrier_node {
   int32_t k;
   int32_t count;
-  int32_t sense;
+  volatile int32_t sense;
   struct omp_tree_barrier_node* parent;
 #if TREE_BARRIER_NODE_PADDING
   int32_t padding[TREE_BARRIER_NODE_PADDING];

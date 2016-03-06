@@ -2,7 +2,7 @@ OMPFLAGS = -fopenmp
 OMPLIBS = -lgomp
 
 CC = gcc
-CPPFLAGS = -g -Wall -std=c99
+CPPFLAGS = -g -Wall -std=c99 -O3
 LDFLAGS = -g -Wall
 LDLIBS = $(OMPLIBS)
 
