@@ -12,9 +12,7 @@ void omp_centralized_barrier_destroy(omp_centralized_barrier_t *barrier) {
 
 void omp_centralized_barrier(omp_centralized_barrier_t *barrier) {
   int local_sense = !barrier->sense;
-#pragma omp atomic
-  barrier->count -= 1;
-  if (barrier->count == 0) {
+  if (__sync_fetch_and_sub(&barrier->count, 1) == 1) {
     barrier->count = barrier->N;
     barrier->sense = local_sense;
   } else {
