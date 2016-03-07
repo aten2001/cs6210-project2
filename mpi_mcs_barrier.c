@@ -27,27 +27,29 @@ void MPI_mcs_barrier(MPI_Comm comm, int tag) {
   int num_arrived = 0;
   while (num_arrived != wait_count) {
     MPI_Status status;
-    MPI_Recv(NULL, 0, MPI_DATATYPE_NULL, MPI_ANY_SOURCE, tag, comm, &status);
-    assert((status.MPI_SOURCE >= (4 * my_id + 1) && (status.MPI_SOURCE < (4 * my_id + wait_count))));
+    MPI_Recv(NULL, 0, MPI_INT, MPI_ANY_SOURCE, tag, comm, &status);
+    assert(((status.MPI_SOURCE >= (4 * my_id + 1)) && (status.MPI_SOURCE <= (4 * my_id + wait_count))));
     num_arrived++;
   }
 
   if (my_id != 0) {
+    MPI_Request req;
     // Notify parent that all of my children have arrived
     int arrive_parent = (my_id - 1) / 4;
-    MPI_Isend(NULL, 0, MPI_DATATYPE_NULL, arrive_parent, tag, comm, NULL);
+    MPI_Isend(NULL, 0, MPI_INT, arrive_parent, tag, comm, &req);
 
     // Wait till we get wakeup message from wakeup parent
     int wakeup_parent = (my_id - 1) / 2;
-    MPI_Recv(NULL, 0, MPI_DATATYPE_NULL, wakeup_parent, tag, comm, NULL);
+    MPI_Recv(NULL, 0, MPI_INT, wakeup_parent, tag, comm, NULL);
   }
 
   // Send wakeup notification to children
   int child_id = 2 * my_id + 1;
   if (child_id < num_processes) {
-    MPI_Isend(NULL, 0, MPI_DATATYPE_NULL, child_id, tag, comm, NULL);
+    MPI_Request req;
+    MPI_Isend(NULL, 0, MPI_INT, child_id, tag, comm, &req);
     if ((child_id + 1) < num_processes) {
-      MPI_Isend(NULL, 0, MPI_DATATYPE_NULL, child_id + 1, tag, comm, NULL);
+      MPI_Isend(NULL, 0, MPI_INT, child_id + 1, tag, comm, &req);
     }
   }
 }
