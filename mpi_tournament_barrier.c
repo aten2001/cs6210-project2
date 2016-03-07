@@ -30,7 +30,9 @@ void MPI_tournament_barrier(MPI_Comm comm, int tag) {
     // Winner wait loop
     while ((my_id % (2 * win_stride)) == 0) {
       // Wait for message from loser
-      MPI_Recv(NULL, 0, MPI_INT, my_id + win_stride, tag, comm, NULL);
+      if ((my_id + win_stride) < num_processes) {
+        MPI_Recv(NULL, 0, MPI_INT, my_id + win_stride, tag, comm, NULL);
+      }
       win_stride *= 2;
     }
 
@@ -43,7 +45,9 @@ void MPI_tournament_barrier(MPI_Comm comm, int tag) {
     while (win_stride > 1) {
       MPI_Request req;
       win_stride /= 2;
-      MPI_Isend(NULL, 0, MPI_INT, my_id + win_stride, tag, comm, &req);
+      if ((my_id + win_stride) < num_processes) {
+        MPI_Isend(NULL, 0, MPI_INT, my_id + win_stride, tag, comm, &req);
+      }
     }
   }
 }
