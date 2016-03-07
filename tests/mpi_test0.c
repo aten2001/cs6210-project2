@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include <unistd.h>
 #include "mpi.h"
 #include "../mpi_barriers.h"
 
@@ -8,12 +10,17 @@ void tournament_test(int num_iters) {
   MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
   MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
 
-  printf("Process %d/%d: Tournament Barrier Test Start\n", my_id, num_processes);
+  time_t rawtime;
+  time(&rawtime);
+  printf("Process %d/%d: %s - Tournament Barrier Test Start\n", my_id, num_processes, ctime(&rawtime));
   for (int i = 1; i <= num_iters; i++) {
-    printf("Process %d/%d: Iteration %d\n", my_id, num_processes, i);
+    time(&rawtime);
+    printf("Process %d/%d: %s - Iteration %d\n", my_id, num_processes, ctime(&rawtime), i);
+    sleep(my_id + 1);
     MPI_tournament_barrier(MPI_COMM_WORLD, 1234);
   }
-  printf("Process %d/%d: Tournament Barrier Test End\n", my_id, num_processes);
+  time(&rawtime);
+  printf("Process %d/%d: %s - Tournament Barrier Test End\n", my_id, num_processes, ctime(&rawtime));
 }
 
 void dissemination_test(int num_iters) {
@@ -21,12 +28,17 @@ void dissemination_test(int num_iters) {
   MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
   MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
 
-  printf("Process %d/%d: Dissemination Barrier Test Start\n", my_id, num_processes);
+  time_t rawtime;
+  time(&rawtime);
+  printf("Process %d/%d: %s - Dissemination Barrier Test Start\n", my_id, num_processes, ctime(&rawtime));
   for (int i = 1; i <= num_iters; i++) {
-    printf("Process %d/%d: Iteration %d\n", my_id, num_processes, i);
+    time(&rawtime);
+    printf("Process %d/%d: %s - Iteration %d\n", my_id, num_processes, ctime(&rawtime), i);
+    sleep(my_id + 1);
     MPI_dissemination_barrier(MPI_COMM_WORLD, 1234);
   }
-  printf("Process %d/%d: Dissemination Barrier Test End\n", my_id, num_processes);
+  time(&rawtime);
+  printf("Process %d/%d: %s - Dissemination Barrier Test End\n", my_id, num_processes, ctime(&rawtime));
 }
 
 void mcs_test(int num_iters) {
@@ -34,12 +46,17 @@ void mcs_test(int num_iters) {
   MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
   MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
 
-  printf("Process %d/%d: MCS Barrier Test Start\n", my_id, num_processes);
+  time_t rawtime;
+  time(&rawtime);
+  printf("Process %d/%d: %s - MCS Barrier Test Start\n", my_id, num_processes, ctime(&rawtime));
   for (int i = 1; i <= num_iters; i++) {
-    printf("Process %d/%d: Iteration %d\n", my_id, num_processes, i);
+    time(&rawtime);
+    printf("Process %d/%d: %s - Iteration %d\n", my_id, num_processes, ctime(&rawtime), i);
+    sleep(my_id + 1);
     MPI_mcs_barrier(MPI_COMM_WORLD, 1234);
   }
-  printf("Process %d/%d: MCS Barrier Test End\n", my_id, num_processes);
+  time(&rawtime);
+  printf("Process %d/%d: %s - MCS Barrier Test End\n", my_id, num_processes, ctime(&rawtime));
 }
 
 void mpi_test(int num_iters) {
@@ -47,12 +64,17 @@ void mpi_test(int num_iters) {
   MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
   MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
 
-  printf("Process %d/%d: MPI Barrier Test Start\n", my_id, num_processes);
+  time_t rawtime;
+  time(&rawtime);
+  printf("Process %d/%d: %s - MPI Barrier Test Start\n", my_id, num_processes, ctime(&rawtime));
   for (int i = 1; i <= num_iters; i++) {
-    printf("Process %d/%d: Iteration %d\n", my_id, num_processes, i);
+    time(&rawtime);
+    printf("Process %d/%d: %s - Iteration %d\n", my_id, num_processes, ctime(&rawtime), i);
+    sleep(my_id + 1);
     MPI_Barrier(MPI_COMM_WORLD);
   }
-  printf("Process %d/%d: MPI Barrier Test End\n", my_id, num_processes);
+  time(&rawtime);
+  printf("Process %d/%d: %s - MPI Barrier Test End\n", my_id, num_processes, ctime(&rawtime));
 }
 
 int main(int argc, char** argv) {
