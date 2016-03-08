@@ -29,23 +29,30 @@ OMP_BARRIER_OBJECTS = $(patsubst $(PROJECT_ROOT_DIR)/%, %, $(OMP_BARRIER_SOURCES
 OMP_TIMING_SOURCES = omp_barrier_timing.c
 OMP_TIMING_OBJECTS = $(OMP_TIMING_SOURCES:.c=.o)
 OMP_TIMING = omp_barrier_timing
+OMP_TIMING_PADDED = $(OMP_TIMING:%=%_padded)
 
 MPI_TIMING_SOURCES = mpi_barrier_timing.c
 MPI_TIMING_OBJECTS = $(MPI_TIMING_SOURCES:.c=.o)
 MPI_TIMING = mpi_barrier_timing
 
-TARGETS = $(OMP_TIMING) $(MPI_TIMING)
+TARGETS = $(OMP_TIMING) $(OMP_TIMING_PADDED) $(MPI_TIMING)
 
 all: $(TARGETS)
 
 $(OMP_TIMING): % : %.o $(OMP_BARRIER_OBJECTS) $(HELPER_OBJECTS)
 	$(CC) -o $@ $(OMPLIBS) $(LDLIBS) $^
 
+$(OMP_TIMING_PADDED): %_padded : %.o $(OMP_BARRIER_OBJECTS:.o=_padded.o) $(HELPER_OBJECTS)
+	$(CC) -o $@ $(OMPLIBS) $(LDLIBS) $^
+	
 $(OMP_TIMING_OBJECTS): %.o : %.c
 	$(CC) -c -o $@ $(CPPFLAGS) $(OMPFLAGS) $^
 
 $(OMP_BARRIER_OBJECTS): %.o : $(PROJECT_ROOT_DIR)/%.c
 	$(CC) -c -o $@ $(CPPFLAGS)  $(OMPFLAGS) $^
+
+$(OMP_BARRIER_OBJECTS:%.o=%_padded.o): %_padded.o : $(PROJECT_ROOT_DIR)/%.c
+	$(CC) -c -o $@ $(CPPFLAGS) -DCACHE_PADDING $(OMPFLAGS) $^
 
 $(MPI_TIMING): % : %.o $(MPI_BARRIER_OBJECTS) $(HELPER_OBJECTS)
 	$(MPICC) -o $@ $(LDLIBS) $^
