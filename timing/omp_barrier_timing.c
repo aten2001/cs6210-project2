@@ -13,7 +13,6 @@ struct timespec before, after;
 
 void centralized_timing(int num_threads) {
   omp_centralized_barrier_t barrier;
-  int block_size = BLOCK / num_threads;
 
   omp_centralized_barrier_init(&barrier, num_threads);
 
@@ -26,7 +25,6 @@ void centralized_timing(int num_threads) {
     start_watch(&before);
 #pragma omp parallel
     {
-      omp_centralized_barrier(&barrier);
       omp_centralized_barrier(&barrier);
     }
     stop_watch(&after);
@@ -169,7 +167,7 @@ void omp_timing(int num_threads) {
 
 void warmup(int num_threads)
 {
-	int i, array[10000];
+  int array[10000];
 
   int block_size = BLOCK / num_threads;
   omp_set_num_threads(num_threads);
@@ -183,13 +181,14 @@ void warmup(int num_threads)
   return;
 }
 
-void print_results()
+void print_results(int num_threads)
 {
   /*
   for (int i = 0; i < tries; i++) {
     printf("%ld, ", results[i]);
   }
   */
+  printf("%d, ", num_threads);
   printf("%0.3f, ", get_mean(results, tries)); 
   printf("%0.3f, ", get_stddev(results, tries)); 
   printf("\n");
@@ -247,7 +246,7 @@ int main(int argc, char** argv) {
       return -1;
   }
 
-  print_results();
+  print_results(num_threads);
 
   return 0;
 }
