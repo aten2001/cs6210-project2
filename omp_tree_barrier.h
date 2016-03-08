@@ -12,18 +12,18 @@
 #define TREE_BARRIER_THREAD_DATA_PADDING 52
 
 typedef struct omp_tree_barrier_node {
+  struct omp_tree_barrier_node* parent;
   int32_t k;
   int32_t count;
   volatile int32_t sense;
-  struct omp_tree_barrier_node* parent;
 #ifdef CACHE_PADDING
   int8_t padding[TREE_BARRIER_NODE_PADDING];
 #endif
 } omp_tree_barrier_node_t;
 
 typedef struct tree_barrier_thread_data {
-  int32_t sense;
   omp_tree_barrier_node_t* mynode;
+  int32_t sense;
 #ifdef CACHE_PADDING
   int8_t padding[TREE_BARRIER_THREAD_DATA_PADDING];
 #endif

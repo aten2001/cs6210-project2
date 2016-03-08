@@ -11,7 +11,7 @@
 
 #define true 1
 #define false 0
-#define MCS_NODE_PADDING 28
+#define MCS_NODE_PADDING 20
 
 typedef struct omp_mcs_barrier_node {
   int32_t sense;
