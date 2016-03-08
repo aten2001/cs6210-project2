@@ -3,8 +3,6 @@ OMPLIBS = -lgomp
 
 CC = gcc
 CPPFLAGS = -g -Wall -std=c99 -O3
-LDFLAGS = -g -Wall
-LDLIBS = $(OMPLIBS)
 
 MPICC = /opt/openmpi-1.4.3-gcc44/bin/mpicc 
 MPIFLAGS = -I/opt/openmpi-1.4.3-gcc44/include
@@ -39,7 +37,7 @@ TARGETS = $(OMP_TESTS) $(MPI_TESTS)
 all: $(TARGETS)
 
 $(OMP_TESTS): % : %.o $(OMP_BARRIER_OBJECTS) $(HELPER_OBJECTS)
-	$(CC) -o $@ $(CPPFLAGS) $(OMPFLAGS) $^
+	$(CC) -o $@ $(OMPLIBS) $^
 
 $(OMP_TEST_OBJECTS): %.o : %.c
 	$(CC) -c -o $@ $(CPPFLAGS) $(OMPFLAGS) $^
