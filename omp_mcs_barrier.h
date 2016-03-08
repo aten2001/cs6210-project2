@@ -11,7 +11,7 @@
 
 #define true 1
 #define false 0
-#define MCS_NODE_PADDING 0
+#define MCS_NODE_PADDING 28
 
 typedef struct omp_mcs_barrier_node {
   int32_t sense;
@@ -21,8 +21,8 @@ typedef struct omp_mcs_barrier_node {
   volatile int8_t* parent_child_not_ready_ptr;
   volatile int32_t* child_sense_ptrs[2];
   int32_t dummy;
-#if MCS_NODE_PADDING
-  int32_t padding[MCS_NODE_PADDING];
+#ifdef CACHE_PADDING
+  int8_t padding[MCS_NODE_PADDING];
 #endif
 } omp_mcs_barrier_node_t;
 

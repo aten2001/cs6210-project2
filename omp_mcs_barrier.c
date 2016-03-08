@@ -3,7 +3,7 @@
 
 void omp_mcs_barrier_init(omp_mcs_barrier_t* barrier, int num_threads) {
   barrier->N = num_threads;
-  barrier->nodes = (omp_mcs_barrier_node_t*) malloc(sizeof(omp_mcs_barrier_node_t) * num_threads);
+  posix_memalign(&barrier->nodes, 64, sizeof(omp_mcs_barrier_node_t) * num_threads);
   if (barrier->nodes == NULL) {
     perror("malloc failed");
     exit(EXIT_FAILURE);

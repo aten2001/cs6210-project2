@@ -7,7 +7,7 @@
 
 #define true 1
 #define false 0
-#define CENTRALIZED_BARRIER_THREAD_DATA_PADDING 0
+#define CENTRALIZED_BARRIER_THREAD_DATA_PADDING 60
 
 typedef struct omp_centralized_barrier {
   int32_t N;
@@ -24,8 +24,8 @@ void omp_centralized_barrier(omp_centralized_barrier_t* barrier);
 
 typedef struct centralized_barrier_thread_data {
   int32_t sense;
-#if CENTRALIZED_BARRIER_THREAD_DATA_PADDING
-  int32_t padding[CENTRALIZED_BARRIER_THREAD_DATA_PADDING];
+#ifdef CACHE_PADDING
+  int8_t padding[CENTRALIZED_BARRIER_THREAD_DATA_PADDING];
 #endif
 } centralized_barrier_thread_data_t;
 

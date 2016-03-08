@@ -8,24 +8,24 @@
 #define true 1
 #define false 0
 
-#define TREE_BARRIER_NODE_PADDING 0
-#define TREE_BARRIER_THREAD_DATA_PADDING 0
+#define TREE_BARRIER_NODE_PADDING 44
+#define TREE_BARRIER_THREAD_DATA_PADDING 52
 
 typedef struct omp_tree_barrier_node {
   int32_t k;
   int32_t count;
   volatile int32_t sense;
   struct omp_tree_barrier_node* parent;
-#if TREE_BARRIER_NODE_PADDING
-  int32_t padding[TREE_BARRIER_NODE_PADDING];
+#ifdef CACHE_PADDING
+  int8_t padding[TREE_BARRIER_NODE_PADDING];
 #endif
 } omp_tree_barrier_node_t;
 
 typedef struct tree_barrier_thread_data {
   int32_t sense;
   omp_tree_barrier_node_t* mynode;
-#if TREE_BARRIER_THREAD_DATA_PADDING
-  int32_t padding[TREE_BARRIER_THREAD_DATA_PADDING];
+#ifdef CACHE_PADDING
+  int8_t padding[TREE_BARRIER_THREAD_DATA_PADDING];
 #endif
 } tree_barrier_thread_data_t;
 
