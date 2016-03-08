@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include "omp_mcs_barrier.h"
+#include <assert.h>
+
 
 void omp_mcs_barrier_init(omp_mcs_barrier_t* barrier, int num_threads) {
   barrier->N = num_threads;
@@ -11,7 +13,7 @@ void omp_mcs_barrier_init(omp_mcs_barrier_t* barrier, int num_threads) {
   }
 
 #ifdef CACHE_PADDING
-  assert((barrier->nodes % 64) == 0)
+  assert(((long)barrier->nodes % 64) == 0)
   assert(sizeof(omp_mcs_barrier_node_t) == 64);
 #endif
 
