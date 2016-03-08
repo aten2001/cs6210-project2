@@ -17,9 +17,9 @@ void centralized_timing(int num_threads) {
   omp_centralized_barrier_init(&barrier, num_threads);
 
 #pragma omp parallel
-    {
-      omp_centralized_barrier(&barrier);
-    }
+  {
+    omp_centralized_barrier(&barrier);
+  }
 
   for (int j = 0; j < tries; j++) {
     start_watch(&before);
@@ -40,9 +40,9 @@ void centralized2_timing(int num_threads) {
   omp_centralized_barrier2_init(&barrier, num_threads);
 
 #pragma omp parallel
-    {
-      omp_centralized_barrier2(&barrier);
-    }
+  {
+    omp_centralized_barrier2(&barrier);
+  }
 
   start_watch(&before);
   for (int j = 0; j < tries; j++) {
@@ -63,9 +63,9 @@ void tree_timing(int num_threads) {
   omp_tree_barrier_init(&barrier, num_threads);
 
 #pragma omp parallel
-    {
-      omp_tree_barrier(&barrier);
-    }
+  {
+    omp_tree_barrier(&barrier);
+  }
 
   for (int j = 0; j < tries; j++) {
     start_watch(&before);
@@ -85,9 +85,9 @@ void tournament_timing(int num_threads) {
   omp_tournament_barrier_init(&barrier, num_threads);
 
 #pragma omp parallel
-    {
-      omp_tournament_barrier(&barrier);
-    }
+  {
+    omp_tournament_barrier(&barrier);
+  }
 
   for (int j = 0; j < tries; j++) {
     start_watch(&before);
@@ -107,9 +107,9 @@ void dissemination_timing(int num_threads) {
   omp_dissemination_barrier_init(&barrier, num_threads);
 
 #pragma omp parallel
-    {
-      omp_dissemination_barrier(&barrier);
-    }
+  {
+    omp_dissemination_barrier(&barrier);
+  }
 
   for (int j = 0; j < tries; j++) {
     start_watch(&before);
@@ -129,9 +129,9 @@ void mcs_timing(int num_threads) {
   omp_mcs_barrier_init(&barrier, num_threads);
 
 #pragma omp parallel
-    {
-      omp_mcs_barrier(&barrier);
-    }
+  {
+    omp_mcs_barrier(&barrier);
+  }
 
   for (int j = 0; j < tries; j++) {
     start_watch(&before);
@@ -149,15 +149,15 @@ void mcs_timing(int num_threads) {
 void omp_timing(int num_threads) {
 
 #pragma omp parallel
-    {
-      #pragma omp barrier
-    }
+  {
+#pragma omp barrier
+  }
 
   for (int j = 0; j < tries; j++) {
     start_watch(&before);
 #pragma omp parallel
     {
-      #pragma omp barrier
+#pragma omp barrier
     }
     stop_watch(&after);
     results[j] = get_timer_diff(&before, &after);
@@ -165,36 +165,35 @@ void omp_timing(int num_threads) {
 
 }
 
-void warmup(int num_threads)
-{
+void warmup(int num_threads) {
   int array[10000];
 
   int block_size = BLOCK / num_threads;
   omp_set_num_threads(num_threads);
-  #pragma omp parallel
+#pragma omp parallel
   {
     int tid = omp_get_thread_num();
-    for (int i = tid * 100; i < tid*100+block_size; i++)
+    for (int i = tid * 100; i < tid * 100 + block_size; i++)
       array[i] = tid;
   }
 
   return;
 }
 
-void print_results(int num_threads)
-{
+void print_results(int num_threads) {
   /*
   for (int i = 0; i < tries; i++) {
     printf("%ld, ", results[i]);
   }
   */
   printf("%d, ", num_threads);
-  printf("%0.3f, ", get_mean(results, tries)); 
-  printf("%0.3f, ", get_stddev(results, tries)); 
+  double m = get_mean(results, tries);
+  printf("%0.3f, ", m);
+  printf("%0.3f, ", get_stddev(results, tries, m));
   printf("\n");
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   if (argc != 3) {
     fprintf(stderr, "Invalid number of arguments. Usage: %s <barrier-type> <num-threads>", argv[0]);
     fprintf(stderr, "\tType 0: Centralized 1\n");

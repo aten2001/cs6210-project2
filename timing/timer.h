@@ -29,13 +29,15 @@ void stop_watch(struct timespec *timer)
 	return start_watch(timer);
 }
 
-double get_stddev(long *results, int num)
+double get_stddev(long *results, int num, double m)
 {
-	long sum2 = 0;
-	for (int i = 0; i < num; i++)
-		sum2 += results[i] * results[i];
+	double sum2 = 0;
+	for (int i = 0; i < num; i++) {
+		double diff = ((double)results[i]) - m;
+		sum2 += diff * diff;
+	}
 
-	double variance = sum2 / num;
+	double variance = sum2 / (num - 1);
 
 	return sqrt(variance);
 }
@@ -46,5 +48,5 @@ double get_mean(long *results, int num)
 	for (int i = 0; i < num; i++)
 		sum += results[i];
 
-	return sum * 1.0 / num;
+	return ((double)sum) / num;
 }

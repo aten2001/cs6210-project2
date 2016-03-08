@@ -97,9 +97,10 @@ void print_results()
   int my_id, num_processes;
   MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
   MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
-  printf("Process %d/%d, ", my_id, num_processes); 
-  printf("%0.3f, ", get_mean(results, tries)); 
-  printf("%0.3f, ", get_stddev(results, tries)); 
+  printf("Process %d/%d, ", my_id, num_processes);
+  double m = get_mean(results, tries);
+  printf("%0.3f, ", m);
+  printf("%0.3f, ", get_stddev(results, tries, m));
   printf("\n");
 }
 
