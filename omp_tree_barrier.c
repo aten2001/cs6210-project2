@@ -40,7 +40,7 @@ void omp_tree_barrier_init(omp_tree_barrier_t *barrier, int num_threads) {
   posix_memalign((void**)&barrier->nodes, 64, sizeof(omp_tree_barrier_node_t) * barrier->N);
 
 #ifdef CACHE_PADDING
-  assert(((long)barrier->nodes % 64) == 0)
+  assert(((long)barrier->nodes % 64) == 0);
   assert(sizeof(omp_tree_barrier_node_t) == 64);
 #endif
   if (barrier->nodes == NULL) {
@@ -50,7 +50,7 @@ void omp_tree_barrier_init(omp_tree_barrier_t *barrier, int num_threads) {
 
   posix_memalign((void**)&barrier->threads, 64, sizeof(tree_barrier_thread_data_t) * barrier->N);
 #ifdef CACHE_PADDING
-  assert(((long)barrier->threads % 64) == 0)
+  assert(((long)barrier->threads % 64) == 0);
   assert(sizeof(tree_barrier_thread_data_t) == 64);
 #endif
   if (barrier->threads == NULL) {

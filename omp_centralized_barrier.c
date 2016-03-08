@@ -33,7 +33,7 @@ void omp_centralized_barrier2_init(omp_centralized_barrier2_t *barrier, int num_
   }
 
 #ifdef CACHE_PADDING
-  assert(((long)barrier->threads % 64) == 0)
+  assert(((long)barrier->threads % 64) == 0);
   assert(sizeof(centralized_barrier_thread_data_t) == 64);
 #endif
   for (int i = 0; i < barrier->N; i++) {
