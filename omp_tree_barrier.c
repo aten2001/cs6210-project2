@@ -36,14 +36,22 @@ void construct_tree(int num_threads, omp_tree_barrier_node_t* nodes, tree_barrie
 
 void omp_tree_barrier_init(omp_tree_barrier_t *barrier, int num_threads) {
   barrier->N = num_threads;
-  posix_memalign(&barrier->nodes, 64, sizeof(omp_tree_barrier_node_t) * barrier->N);
+  posix_memalign((void**)&barrier->nodes, 64, sizeof(omp_tree_barrier_node_t) * barrier->N);
 
+#ifdef CACHE_PADDING
+  assert((barrier->nodes % 64) == 0)
+  assert(sizeof(omp_tree_barrier_node_t) == 64);
+#endif
   if (barrier->nodes == NULL) {
     perror("malloc failed");
     exit(EXIT_FAILURE);
   }
 
-  posix_memalign(&barrier->threads, 64, sizeof(tree_barrier_thread_data_t) * barrier->N);
+  posix_memalign((void**)&barrier->threads, 64, sizeof(tree_barrier_thread_data_t) * barrier->N);
+#ifdef CACHE_PADDING
+  assert((barrier->threads % 64) == 0)
+  assert(sizeof(tree_barrier_thread_data_t) == 64);
+#endif
   if (barrier->threads == NULL) {
     perror("malloc failed");
     exit(EXIT_FAILURE);
