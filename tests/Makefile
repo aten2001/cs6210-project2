@@ -2,7 +2,7 @@ OMPFLAGS = -fopenmp
 OMPLIBS = -lgomp
 
 CC = gcc
-CPPFLAGS = -g -Wall -std=c99 -O3
+CPPFLAGS = -g -Wall -std=gnu99 -O3
 
 MPICC = /opt/openmpi-1.4.3-gcc44/bin/mpicc 
 MPIFLAGS = -I/opt/openmpi-1.4.3-gcc44/include
@@ -27,20 +27,21 @@ OMP_BARRIER_OBJECTS = $(patsubst $(PROJECT_ROOT_DIR)/%, %, $(OMP_BARRIER_SOURCES
 OMP_TEST_SOURCES = omp_test0.c omp_test1.c
 OMP_TEST_OBJECTS = $(OMP_TEST_SOURCES:.c=.o)
 OMP_TESTS = omp_test0 omp_test1
+OMP_TESTS_PADDED = $(OMP_TESTS:%=%_padded)
 
 MPI_TEST_SOURCES = mpi_test0.c mpi_test1.c
 MPI_TEST_OBJECTS = $(MPI_TEST_SOURCES:.c=.o)
 MPI_TESTS = mpi_test0 mpi_test1
 
-TARGETS = $(OMP_TESTS) $(OMP_TESTS:%=%_padded) $(MPI_TESTS)
+TARGETS = $(OMP_TESTS) $(OMP_TESTS_PADDED) $(MPI_TESTS)
 
 all: $(TARGETS)
 
 $(OMP_TESTS): % : %.o $(OMP_BARRIER_OBJECTS) $(HELPER_OBJECTS)
 	$(CC) -o $@ $(OMPLIBS) $^
 
-$(OMP_PADDED_TESTS): %_padded : %.o $(OMP_BARRIER_OBJECTS:.o=_padded.o) $(HELPER_OBJECTS)
-    $(CC) -o $@ $(OMPLIBS) $^
+$(OMP_TESTS_PADDED): %_padded : %.o $(OMP_BARRIER_OBJECTS:.o=_padded.o) $(HELPER_OBJECTS)
+	$(CC) -o $@ $(OMPLIBS) $^
 
 $(OMP_TEST_OBJECTS): %.o : %.c
 	$(CC) -c -o $@ $(CPPFLAGS) $(OMPFLAGS) $^
@@ -48,7 +49,7 @@ $(OMP_TEST_OBJECTS): %.o : %.c
 $(OMP_BARRIER_OBJECTS): %.o : $(PROJECT_ROOT_DIR)/%.c
 	$(CC) -c -o $@ $(CPPFLAGS)  $(OMPFLAGS) $^
 
-$(OMP_BARRIER_OBJECTS): %_padded.o : $(PROJECT_ROOT_DIR)/%.c
+$(OMP_BARRIER_OBJECTS:%.o=%_padded.o): %_padded.o : $(PROJECT_ROOT_DIR)/%.c
 	$(CC) -c -o $@ $(CPPFLAGS) -DCACHE_PADDING $(OMPFLAGS) $^
 
 $(MPI_TESTS): % : %.o $(MPI_BARRIER_OBJECTS) $(HELPER_OBJECTS)
