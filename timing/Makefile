@@ -26,14 +26,14 @@ HELPER_OBJECTS = $(patsubst $(PROJECT_ROOT_DIR)/%, %, $(HELPER_SOURCES:.c=.o))
 MPI_BARRIER_OBJECTS = $(patsubst $(PROJECT_ROOT_DIR)/%, %, $(MPI_BARRIER_SOURCES:.c=.o))
 OMP_BARRIER_OBJECTS = $(patsubst $(PROJECT_ROOT_DIR)/%, %, $(OMP_BARRIER_SOURCES:.c=.o))
 
-OMP_TIMING_SOURCES = omp_barrier_timing.c
+OMP_TIMING_SOURCES = omp_barrier_timing.c omp_barrier_timing2.c
 OMP_TIMING_OBJECTS = $(OMP_TIMING_SOURCES:.c=.o)
-OMP_TIMING = omp_barrier_timing
+OMP_TIMING = omp_barrier_timing omp_barrier_timing2
 OMP_TIMING_PADDED = $(OMP_TIMING:%=%_padded)
 
-MPI_TIMING_SOURCES = mpi_barrier_timing.c
+MPI_TIMING_SOURCES = mpi_barrier_timing.c mpi_barrier_timing2.c mpi_barrier_timing3.c
 MPI_TIMING_OBJECTS = $(MPI_TIMING_SOURCES:.c=.o)
-MPI_TIMING = mpi_barrier_timing
+MPI_TIMING = mpi_barrier_timing mpi_barrier_timing2 mpi_barrier_timing3
 
 TARGETS = $(OMP_TIMING) $(OMP_TIMING_PADDED) $(MPI_TIMING)
 
