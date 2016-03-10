@@ -5,7 +5,7 @@
 
 #define BLOCK 10000
 #define NUM_ITERS 100
-#define tries 100
+#define tries 10000
 
 int array[BLOCK];
 long results[tries];
@@ -201,14 +201,81 @@ void print_results(int num_threads) {
     printf("%ld, ", results[i]);
   }
   */
-  printf("%d, ", num_threads);
+  //printf("%d, ", num_threads);
   double m = get_mean(results, tries);
   printf("%0.3f, ", m);
   printf("%0.3f, ", get_stddev(results, tries, m));
-  printf("\n");
+  //printf("\n");
+}
+
+void print_barrier_type(int barrier_type)
+{
+  switch (barrier_type) {
+  case 0:
+    printf("Centralized1, ");
+    break;
+  case 1:
+    printf("Centralized2, ");
+    break;
+  case 2:
+    printf("Tree, ");
+    break;
+  case 3:
+    printf("Tournament, ");
+    break;
+  case 4:
+    printf("Dissemination, ");
+    break;
+  case 5:
+    printf("MCS, ");
+    break;
+  case 6:
+    printf("OMP, ");
+    break;
+  default:
+    printf("Invalid Barrier Type\n");
+  }
 }
 
 int main(int argc, char **argv) {
+  int barrier_type, num_threads;
+
+  for (barrier_type = 0; barrier_type < 7; barrier_type++) {
+    print_barrier_type(barrier_type);
+    for (num_threads = 2; num_threads <= 12; num_threads+=2) {
+      warmup(num_threads);
+      switch (barrier_type) {
+      case 0:
+	centralized_timing(num_threads);
+	break;
+      case 1:
+	centralized2_timing(num_threads);
+	break;
+      case 2:
+	tree_timing(num_threads);
+	break;
+      case 3:
+	tournament_timing(num_threads);
+	break;
+      case 4:
+	dissemination_timing(num_threads);
+	break;
+      case 5:
+	mcs_timing(num_threads);
+	break;
+      case 6:
+	omp_timing(num_threads);
+	break;
+      default:
+	return -1;
+      }
+      print_results(num_threads);
+    }
+    printf("\n");
+  }
+}
+
+int alt_main(int argc, char **argv) {
   if (argc != 3) {
     fprintf(stderr, "Invalid number of arguments. Usage: %s <barrier-type> <num-threads>", argv[0]);
     fprintf(stderr, "\tType 0: Centralized 1\n");
