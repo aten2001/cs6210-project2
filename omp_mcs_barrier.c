@@ -33,14 +33,16 @@ void omp_mcs_barrier_init(omp_mcs_barrier_t* barrier, int num_threads) {
 
     for (int j = 0; j < 4; j++) {
       if (j < node->num_children) {
-        node->child_notready[j] = true;
+        node->children_notready.array[j] = true;
+        node->have_children.array[j] = true;
       } else {
-        node->child_notready[j] = false;
+        node->children_notready.array[j] = false;
+        node->have_children.array[j] = false;
       }
     }
 
     if (i != 0) {
-      node->parent_child_not_ready_ptr = &(barrier->nodes[(i - 1) / 4].child_notready[(i - 1) % 4]);
+      node->parent_child_not_ready_ptr = &(barrier->nodes[(i - 1) / 4].children_notready.array[(i - 1) % 4]);
     }
 
 
@@ -65,11 +67,8 @@ void omp_mcs_barrier(omp_mcs_barrier_t* barrier) {
   int32_t id = omp_get_thread_num();
   omp_mcs_barrier_node_t* my_node = &barrier->nodes[id];
   if (my_node->num_children > 0) {
-    volatile int32_t* children_not_ready = (volatile int32_t*) &my_node->child_notready;
-    while (*children_not_ready != 0) { };
-    for (int i = 0; i < my_node->num_children; i++) {
-      my_node->child_notready[i] = true;
-    }
+    while (my_node->children_notready.value != 0) { };
+    my_node->children_notready.value = my_node->have_children.value;
   }
 
   if (id != 0) {
