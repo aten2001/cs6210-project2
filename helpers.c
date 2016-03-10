@@ -16,3 +16,8 @@ inline int32_t log2ceil(int32_t value) {
   }
   return count;
 }
+
+inline int mod(int a, int b) {
+  int r = a % b;
+  return r < 0 ? r + b : r;
+}
