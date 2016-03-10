@@ -11,7 +11,6 @@ MPIFLAGS = -I/opt/openmpi-1.4.3-gcc44/include
 
 PROJECT_ROOT_DIR = ..
 
-HELPER_SOURCES = $(PROJECT_ROOT_DIR)/helpers.c
 MPI_BARRIER_SOURCES = $(PROJECT_ROOT_DIR)/mpi_dissemination_barrier.c \
                       $(PROJECT_ROOT_DIR)/mpi_tournament_barrier.c \
                       $(PROJECT_ROOT_DIR)/mpi_mcs_barrier.c
@@ -22,7 +21,6 @@ OMP_BARRIER_SOURCES = $(PROJECT_ROOT_DIR)/omp_centralized_barrier.c \
                       $(PROJECT_ROOT_DIR)/omp_dissemination_barrier.c \
                       $(PROJECT_ROOT_DIR)/omp_mcs_barrier.c
 
-HELPER_OBJECTS = $(patsubst $(PROJECT_ROOT_DIR)/%, %, $(HELPER_SOURCES:.c=.o))
 MPI_BARRIER_OBJECTS = $(patsubst $(PROJECT_ROOT_DIR)/%, %, $(MPI_BARRIER_SOURCES:.c=.o))
 OMP_BARRIER_OBJECTS = $(patsubst $(PROJECT_ROOT_DIR)/%, %, $(OMP_BARRIER_SOURCES:.c=.o))
 
@@ -39,10 +37,10 @@ TARGETS = $(OMP_TIMING) $(OMP_TIMING_PADDED) $(MPI_TIMING)
 
 all: $(TARGETS)
 
-$(OMP_TIMING): % : %.o $(OMP_BARRIER_OBJECTS) $(HELPER_OBJECTS)
+$(OMP_TIMING): % : %.o $(OMP_BARRIER_OBJECTS)
 	$(CC) -o $@ $(OMPLIBS) $(LDLIBS) $^
 
-$(OMP_TIMING_PADDED): %_padded : %.o $(OMP_BARRIER_OBJECTS:.o=_padded.o) $(HELPER_OBJECTS)
+$(OMP_TIMING_PADDED): %_padded : %.o $(OMP_BARRIER_OBJECTS:.o=_padded.o)
 	$(CC) -o $@ $(OMPLIBS) $(LDLIBS) $^
 	
 $(OMP_TIMING_OBJECTS): %.o : %.c
@@ -54,7 +52,7 @@ $(OMP_BARRIER_OBJECTS): %.o : $(PROJECT_ROOT_DIR)/%.c
 $(OMP_BARRIER_OBJECTS:%.o=%_padded.o): %_padded.o : $(PROJECT_ROOT_DIR)/%.c
 	$(CC) -c -o $@ $(CPPFLAGS) -DCACHE_PADDING $(OMPFLAGS) $^
 
-$(MPI_TIMING): % : %.o $(MPI_BARRIER_OBJECTS) $(HELPER_OBJECTS)
+$(MPI_TIMING): % : %.o $(MPI_BARRIER_OBJECTS)
 	$(MPICC) -o $@ $(LDLIBS) $^
 
 $(MPI_TIMING_OBJECTS) : %.o : %.c
