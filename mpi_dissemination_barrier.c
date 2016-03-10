@@ -1,3 +1,4 @@
+#include "mpi_dissemination_barrier.h"
 #include "helpers.h"
 
 /**
