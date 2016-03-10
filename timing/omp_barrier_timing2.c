@@ -4,13 +4,24 @@
 #include "timer.h"
 
 #define BLOCK 10000
-#define NUM_ITERS 100
-#define tries 10000
+#define NUM_ITERS 10
+#define tries 100
 
 int array[BLOCK];
 long results[tries];
 
 struct timespec before, after;
+
+void do_work(int iter)
+{
+  int tid = omp_get_thread_num();
+  volatile mult = 1;
+
+  for (int i = 0; i < tid * iter; i++) {
+    for (int j = 0; j < BLOCK; j++)
+      mult *= i*j;
+  }
+}
 
 void centralized_timing(int num_threads) {
   omp_centralized_barrier_t barrier;
@@ -27,6 +38,7 @@ void centralized_timing(int num_threads) {
 #pragma omp parallel
     {
       for (int i = 0; i < NUM_ITERS; i++) {
+	do_work(i);
         omp_centralized_barrier(&barrier);
       }
     }
@@ -53,6 +65,7 @@ void centralized2_timing(int num_threads) {
 #pragma omp parallel
     {
       for (int i = 0; i < NUM_ITERS; i++) {
+	do_work(i);
         omp_centralized_barrier2(&barrier);
       }
     }
@@ -77,6 +90,7 @@ void tree_timing(int num_threads) {
 #pragma omp parallel
     {
       for (int i = 0; i < NUM_ITERS; i++) {
+	do_work(i);
         omp_tree_barrier(&barrier);
       }
     }
@@ -101,6 +115,7 @@ void tournament_timing(int num_threads) {
 #pragma omp parallel
     {
       for (int i = 0; i < NUM_ITERS; i++) {
+	do_work(i);
         omp_tournament_barrier(&barrier);
       }
     }
@@ -125,6 +140,7 @@ void dissemination_timing(int num_threads) {
 #pragma omp parallel
     {
       for (int i = 0; i < NUM_ITERS; i++) {
+	do_work(i);
         omp_dissemination_barrier(&barrier);
       }
     }
@@ -149,6 +165,7 @@ void mcs_timing(int num_threads) {
 #pragma omp parallel
     {
       for (int i = 0; i < NUM_ITERS; i++) {
+	do_work(i);
         omp_mcs_barrier(&barrier);
       }
     }
@@ -171,6 +188,7 @@ void omp_timing(int num_threads) {
 #pragma omp parallel
     {
       for (int i = 0; i < NUM_ITERS; i++) {
+	do_work(i);
 #pragma omp barrier
       }
     }
