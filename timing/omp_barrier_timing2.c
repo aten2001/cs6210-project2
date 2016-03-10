@@ -4,7 +4,7 @@
 #include "timer.h"
 
 #define BLOCK 10000
-#define NUM_ITERS 10
+#define NUM_ITERS 100
 #define tries 100
 
 int array[BLOCK];
@@ -15,11 +15,11 @@ struct timespec before, after;
 void do_work(int iter)
 {
   int tid = omp_get_thread_num();
-  volatile mult = 1;
+  volatile long mult = 1;
 
   for (int i = 0; i < tid * iter; i++) {
-    for (int j = 0; j < BLOCK; j++)
-      mult *= i*j;
+    //for (int j = 0; j < BLOCK; j++)
+      mult *= i;
   }
 }
 
