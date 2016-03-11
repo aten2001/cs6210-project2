@@ -23,6 +23,7 @@ COMBINED_BARRIER_SOURCES = $(PROJECT_ROOT_DIR)/combined_barrier.c
 
 MPI_BARRIER_OBJECTS = $(patsubst $(PROJECT_ROOT_DIR)/%, %, $(MPI_BARRIER_SOURCES:.c=.o))
 OMP_BARRIER_OBJECTS = $(patsubst $(PROJECT_ROOT_DIR)/%, %, $(OMP_BARRIER_SOURCES:.c=.o))
+COMBINED_BARRIER_OBJECTS = $(patsubst $(PROJECT_ROOT_DIR)/%, %, $(COMBINED_BARRIER_SOURCES:.c=.o))
 
 OMP_TEST_SOURCES = omp_test0.c omp_test1.c
 OMP_TEST_OBJECTS = $(OMP_TEST_SOURCES:.c=.o)
@@ -56,7 +57,7 @@ $(OMP_BARRIER_OBJECTS): %.o : $(PROJECT_ROOT_DIR)/%.c
 $(OMP_BARRIER_OBJECTS:%.o=%_padded.o): %_padded.o : $(PROJECT_ROOT_DIR)/%.c
 	$(CC) -c -o $@ $(CPPFLAGS) -DCACHE_PADDING $(OMPFLAGS) $^
 
-$(MPI_TESTS): % : %.o $(MPI_BARRIER_OBJECTS) $(HELPER_OBJECTS)
+$(MPI_TESTS): % : %.o $(MPI_BARRIER_OBJECTS)
 	$(MPICC) -o $@ $(CPPFLAGS) $(MPIFLAGS) $^
 
 $(MPI_TEST_OBJECTS) : %.o : %.c
@@ -71,12 +72,8 @@ $(COMBINED_TESTS): % : %.o $(COMBINED_BARRIER_OBJECTS)
 $(COMBINED_TEST_OBJECTS) : %.o : %.c
 	$(MPICC) -c -o $@ $(CPPFLAGS) $(MPIFLAGS) $(OMPFLAGS) $^
 
-
 $(COMBINED_BARRIER_OBJECTS): %.o : $(PROJECT_ROOT_DIR)/%.c
 	$(MPICC) -c -o $@ $(CPPFLAGS) $(MPIFLAGS) $(OMPFLAGS) $^
-
-$(HELPER_OBJECTS): %.o : $(PROJECT_ROOT_DIR)/%.c
-	$(CC) -c -o $@ $(CPPFLAGS) $^
 
 clean:
 	@echo " Cleaning..."; rm -f *.o $(TARGETS)

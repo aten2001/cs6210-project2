@@ -13,12 +13,14 @@ void combined_test(int num_threads, int num_iters) {
   MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
   MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
 
+  combined_barrier_t barrier;
+  combined_barrier_init(&barrier, num_threads);
   char* curtime;
   time_t rawtime;
   time(&rawtime);
   curtime = ctime(&rawtime);
   curtime[strlen(curtime)-1] = ' ';
-  printf("Process %d/%d: %s- MPI Barrier Test Start\n", my_id, num_processes, curtime);
+  printf("Process %d/(%d, %d): %s- MPI Barrier Test Start\n", my_id, omp_get_num_threads(), num_processes, curtime);
   #pragma omp parallel
   {
     int tid = omp_get_thread_num();
@@ -28,12 +30,11 @@ void combined_test(int num_threads, int num_iters) {
       curtime[strlen(curtime)-1] = ' ';
       printf("Process %d.%d/%d: %s- Iteration %d\n", my_id, tid, num_processes, curtime, i);
       sleep(my_id + tid + 1);
-      #pragma omp single
-      {
-        MPI_Barrier(MPI_COMM_WORLD);
-      }
+      combined_barrier(&barrier, MPI_COMM_WORLD, 1234);
     }
   }
+  
+  combined_barrier_destroy(&barrier);
   time(&rawtime);
   curtime = ctime(&rawtime);
   curtime[strlen(curtime)-1] = ' ';

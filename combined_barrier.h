@@ -1,10 +1,17 @@
 #ifndef PROJECT2_COMBINED_BARRIER_H
 #define PROJECT2_COMBINED_BARRIER_H
 
+#include <stdlib.h>
+#include <stdint.h>
 #include "mpi.h"
 
-typedef struct combined_barrier {
+#define true 1
+#define false 0
 
+typedef struct combined_barrier {
+  int32_t N;
+  volatile int32_t count;
+  volatile int32_t sense;
 } combined_barrier_t;
 
 void combined_barrier_init(combined_barrier_t* barrier, int num_threads);
