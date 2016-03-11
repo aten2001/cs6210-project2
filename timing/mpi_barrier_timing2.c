@@ -13,6 +13,28 @@ long results[tries];
 
 struct timespec before, after;
 
+void combined_timing(int num_threads)
+{
+  int my_id, num_processes;
+
+  MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
+  MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
+
+  combined_barrier_t barrier;
+  combined_barrier_init(&barrier, num_threads);
+
+  for (int j = 0; j < tries; j++) {
+    start_watch(&before);
+    for (int k = 0; k < NUM_ITERS; k++) {
+      combined_barrier(&barrier, MPI_COMM_WORLD, 1234);
+    }
+    stop_watch(&after);
+    results[j] = get_timer_diff(&before, &after);
+  }
+
+  combined_barrier_destroy(&barrier);
+}
+
 void tournament_timing() {
   int my_id, num_processes;
   MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
@@ -128,6 +150,7 @@ int main(int argc, char** argv) {
     fprintf(stderr, "\tType 1: Dissemination\n");
     fprintf(stderr, "\tType 2: MCS\n");
     fprintf(stderr, "\tType 3: MPI\n");
+    fprintf(stderr, "\tType 4: Combined\n");
     exit(1);
   }
 
@@ -154,6 +177,10 @@ int main(int argc, char** argv) {
       printf("MPI, ");
       mpi_timing();
       break;
+    case 4:
+      assert(argc > 2);
+      printf("Combined, ");
+      combined_timing(atoi(argv[2]));
     default:
       printf("Invalid Barrier Type\n");
       return -1;

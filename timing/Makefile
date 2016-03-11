@@ -13,7 +13,8 @@ PROJECT_ROOT_DIR = ..
 
 MPI_BARRIER_SOURCES = $(PROJECT_ROOT_DIR)/mpi_dissemination_barrier.c \
                       $(PROJECT_ROOT_DIR)/mpi_tournament_barrier.c \
-                      $(PROJECT_ROOT_DIR)/mpi_mcs_barrier.c
+                      $(PROJECT_ROOT_DIR)/mpi_mcs_barrier.c \
+											$(PROJECT_ROOT_DIR)/combined_barrier.c
 
 OMP_BARRIER_SOURCES = $(PROJECT_ROOT_DIR)/omp_centralized_barrier.c \
                       $(PROJECT_ROOT_DIR)/omp_tree_barrier.c \
