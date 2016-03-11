@@ -34,9 +34,9 @@ MPI_TEST_SOURCES = mpi_test0.c mpi_test1.c
 MPI_TEST_OBJECTS = $(MPI_TEST_SOURCES:.c=.o)
 MPI_TESTS = mpi_test0 mpi_test1
 
-COMBINED_TEST_SOURCES = combined_test0.c
+COMBINED_TEST_SOURCES = combined_test0.c combined_test1.c
 COMBINED_TEST_OBJECTS = $(COMBINED_TEST_SOURCES:.c=.o)
-COMBINED_TESTS = combined_test0
+COMBINED_TESTS = combined_test0 combined_test1
 
 TARGETS = $(OMP_TESTS) $(OMP_TESTS_PADDED) $(MPI_TESTS) $(COMBINED_TESTS)
 
