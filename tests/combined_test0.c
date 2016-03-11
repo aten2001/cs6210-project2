@@ -8,6 +8,7 @@
 #include "../combined_barrier.h"
 
 void combined_test(int num_threads, int num_iters) {
+  omp_set_dynamic(0);
   omp_set_num_threads(num_threads);
   int my_id, num_processes;
   MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
@@ -20,7 +21,7 @@ void combined_test(int num_threads, int num_iters) {
   time(&rawtime);
   curtime = ctime(&rawtime);
   curtime[strlen(curtime)-1] = ' ';
-  printf("Process %d/(%d, %d): %s- MPI Barrier Test Start\n", my_id, omp_get_num_threads(), num_processes, curtime);
+  printf("Process %d/%d: %s- Combined Barrier Test Start\n", my_id, num_processes, curtime);
   #pragma omp parallel
   {
     int tid = omp_get_thread_num();
@@ -28,7 +29,7 @@ void combined_test(int num_threads, int num_iters) {
       time(&rawtime);
       curtime = ctime(&rawtime);
       curtime[strlen(curtime)-1] = ' ';
-      printf("Process %d.%d/%d: %s- Iteration %d\n", my_id, tid, num_processes, curtime, i);
+      printf("Process %d.%d/(%d, %d): %s- Iteration %d\n", my_id, tid, num_processes, omp_get_num_threads(), curtime, i);
       sleep(my_id + tid + 1);
       combined_barrier(&barrier, MPI_COMM_WORLD, 1234);
     }
@@ -38,10 +39,11 @@ void combined_test(int num_threads, int num_iters) {
   time(&rawtime);
   curtime = ctime(&rawtime);
   curtime[strlen(curtime)-1] = ' ';
-  printf("Process %d/%d: %s- MPI Barrier Test End\n", my_id, num_processes, curtime);
+  printf("Process %d/%d: %s- Combined Barrier Test End\n", my_id, num_processes, curtime);
 }
 
 void omp_mpi_test(int num_threads, int num_iters) {
+  omp_set_dynamic(0);
   omp_set_num_threads(num_threads);
   int my_id, num_processes;
   MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
@@ -60,7 +62,7 @@ void omp_mpi_test(int num_threads, int num_iters) {
       time(&rawtime);
       curtime = ctime(&rawtime);
       curtime[strlen(curtime)-1] = ' ';
-      printf("Process %d.%d/%d: %s- Iteration %d\n", my_id, tid, num_processes, curtime, i);
+      printf("Process %d.%d/(%d, %d): %s- Iteration %d\n", my_id, tid, num_processes, omp_get_num_threads(), curtime, i);
       sleep(my_id + tid + 1);
       #pragma omp barrier
       #pragma omp single
