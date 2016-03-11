@@ -30,7 +30,7 @@ void combined_test(int num_threads, int num_iters) {
       curtime = ctime(&rawtime);
       curtime[strlen(curtime)-1] = ' ';
       printf("Process %d.%d/(%d, %d): %s- Iteration %d\n", my_id, tid, num_processes, omp_get_num_threads(), curtime, i);
-      sleep(my_id + tid + 1);
+      sleep(my_id + tid);
       combined_barrier(&barrier, MPI_COMM_WORLD, 1234);
     }
   }
@@ -63,7 +63,7 @@ void omp_mpi_test(int num_threads, int num_iters) {
       curtime = ctime(&rawtime);
       curtime[strlen(curtime)-1] = ' ';
       printf("Process %d.%d/(%d, %d): %s- Iteration %d\n", my_id, tid, num_processes, omp_get_num_threads(), curtime, i);
-      sleep(my_id + tid + 1);
+      sleep(my_id + tid);
       #pragma omp barrier
       #pragma omp single
       {
