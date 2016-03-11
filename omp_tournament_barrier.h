@@ -1,7 +1,3 @@
-//
-// Created by manatunga on 2/29/16.
-//
-
 #ifndef PROJECT2_OMP_TOURNAMENT_BARRIER_H
 #define PROJECT2_OMP_TOURNAMENT_BARRIER_H
 
@@ -12,7 +8,6 @@
 
 #define true 1
 #define false 0
-
 
 typedef enum {
   UNKNOWN, WINNER, LOSER, BYE, CHAMPION, DROPOUT
