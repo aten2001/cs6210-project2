@@ -1,0 +1,7 @@
+The barrier headers and source are present in the top-level folder. Individual
+tests and timing experiments are included in the respective folders.
+
+In each folder, invoke make to build tests and the timing benchmarks. You can
+utilize the provided bash scripts to submit jobs to the cluster. There are
+separate scripts for different parameters which is clearly explained in the name
+of the script.
