@@ -30,9 +30,9 @@ OMP_TIMING_OBJECTS = $(OMP_TIMING_SOURCES:.c=.o)
 OMP_TIMING = omp_barrier_timing omp_barrier_timing2 omp_barrier_timing3
 OMP_TIMING_PADDED = $(OMP_TIMING:%=%_padded)
 
-MPI_TIMING_SOURCES = mpi_barrier_timing.c mpi_barrier_timing2.c mpi_barrier_timing3.c combined_barrier_timing2.c
+MPI_TIMING_SOURCES = mpi_barrier_timing.c mpi_barrier_timing2.c mpi_barrier_timing3.c combined_barrier_timing2.c combined_barrier_timing.c
 MPI_TIMING_OBJECTS = $(MPI_TIMING_SOURCES:.c=.o)
-MPI_TIMING = mpi_barrier_timing mpi_barrier_timing2 mpi_barrier_timing3 combined_barrier_timing2
+MPI_TIMING = mpi_barrier_timing mpi_barrier_timing2 mpi_barrier_timing3 combined_barrier_timing2 combined_barrier_timing
 
 TARGETS = $(OMP_TIMING) $(OMP_TIMING_PADDED) $(MPI_TIMING)
 
