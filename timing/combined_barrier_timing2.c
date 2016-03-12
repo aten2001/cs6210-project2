@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
 
   warmup();
 
-  combined_timing(atoi(argv[2]));
+  combined_timing(num_threads);
 
   print_results();
   MPI_Finalize();
