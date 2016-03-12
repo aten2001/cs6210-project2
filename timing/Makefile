@@ -60,7 +60,7 @@ $(MPI_TIMING_OBJECTS) : %.o : %.c
 	$(MPICC) -c -o $@ $(CPPFLAGS) $(MPIFLAGS) $^ $(OMPFLAGS) $(OMPLIBS)
 
 $(MPI_BARRIER_OBJECTS): %.o : $(PROJECT_ROOT_DIR)/%.c
-	$(MPICC) -c -o $@ $(CPPFLAGS) $(MPIFLAGS) $^
+	$(MPICC) -c -o $@ $(CPPFLAGS) $(MPIFLAGS) $^ $(OMPFLAGS) $(OMPLIBS)
 
 $(HELPER_OBJECTS): %.o : $(PROJECT_ROOT_DIR)/%.c
 	$(CC) -c -o $@ $(CPPFLAGS) $^
