@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <omp.h>
 #include "mpi.h"
 #include "../mpi_barriers.h"
 #include "timer.h"
@@ -40,6 +41,31 @@ void combined_timing(int num_threads)
   combined_barrier_destroy(&barrier);
 }
 
+void baseline(int num_threads)
+{
+  int my_id, num_processes;
+  MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
+  MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
+
+  for (int j = 0; j < tries; j++) {
+    start_watch(&before);
+
+    #pragma omp parallel
+    {
+      for (int i = 1; i <= NUM_ITERS; i++) {
+        #pragma omp barrier
+        #pragma omp single
+        {
+          MPI_Barrier(MPI_COMM_WORLD);
+        }
+      }
+    }
+
+    stop_watch(&after);
+    results[j] = get_timer_diff(&before, &after);
+  }
+}
+
 void warmup(int num_threads)
 {
   volatile int array[10000];
@@ -50,6 +76,7 @@ void warmup(int num_threads)
 
   omp_set_dynamic(0);
   omp_set_num_threads(num_threads);
+
   int block_size = BLOCK / num_processes;
   int tid = my_id;
 #pragma omp for
@@ -87,9 +114,12 @@ int main(int argc, char** argv) {
 
   warmup(num_threads);
 
-  combined_timing(num_threads);
-
+  baseline(num_threads);
   print_results();
+
+  combined_timing(num_threads);
+  print_results();
+
   MPI_Finalize();
   return 0;
 }
