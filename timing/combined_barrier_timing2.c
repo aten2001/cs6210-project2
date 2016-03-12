@@ -25,9 +25,14 @@ void combined_timing(int num_threads)
 
   for (int j = 0; j < tries; j++) {
     start_watch(&before);
-    for (int k = 0; k < NUM_ITERS; k++) {
-      combined_barrier(&barrier, MPI_COMM_WORLD, 1234);
+
+    #pragma omp parallel
+    {
+      for (int k = 0; k < NUM_ITERS; k++) {
+        combined_barrier(&barrier, MPI_COMM_WORLD, 1234);
+      }
     }
+
     stop_watch(&after);
     results[j] = get_timer_diff(&before, &after);
   }
@@ -35,14 +40,16 @@ void combined_timing(int num_threads)
   combined_barrier_destroy(&barrier);
 }
 
-void warmup()
+void warmup(int num_threads)
 {
-  int array[10000];
+  volatile int array[10000];
 
   int my_id, num_processes;
   MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
   MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
 
+  omp_set_dynamic(0);
+  omp_set_num_threads(num_threads);
   int block_size = BLOCK / num_processes;
   int tid = my_id;
 #pragma omp for
@@ -78,7 +85,7 @@ int main(int argc, char** argv) {
 
   MPI_Init(&argc, &argv);
 
-  warmup();
+  warmup(num_threads);
 
   combined_timing(num_threads);
 
